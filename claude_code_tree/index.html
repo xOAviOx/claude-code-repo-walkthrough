@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Code — Codebase Explorer</title>
+  <meta name="description" content="An interactive visual guide to the Claude Code codebase architecture. Explore the file tree, modules, data flow, and key subsystems." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Background animated gradient blobs -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Side Navigation -->
+  <nav id="side-nav" class="side-nav">
+    <div class="nav-header">
+      <div class="nav-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" fill="url(#grad1)"/><path d="M2 17l10 5 10-5" stroke="url(#grad1)" stroke-width="2" fill="none"/><path d="M2 12l10 5 10-5" stroke="url(#grad1)" stroke-width="2" fill="none"/><defs><linearGradient id="grad1" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#c084fc"/><stop offset="1" stop-color="#818cf8"/></linearGradient></defs></svg>
+        <span>Claude Code</span>
+      </div>
+    </div>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#hero" class="nav-link active" data-section="hero"><span class="nav-icon">🏠</span>Overview</a></li>
+      <li><a href="#entrypoints" class="nav-link" data-section="entrypoints"><span class="nav-icon">🚀</span>Entrypoints</a></li>
+      <li><a href="#architecture" class="nav-link" data-section="architecture"><span class="nav-icon">🏗️</span>Architecture</a></li>
+      <li><a href="#query-engine" class="nav-link" data-section="query-engine"><span class="nav-icon">⚙️</span>Query Engine</a></li>
+      <li><a href="#tool-system" class="nav-link" data-section="tool-system"><span class="nav-icon">🔧</span>Tool System</a></li>
+      <li><a href="#commands" class="nav-link" data-section="commands"><span class="nav-icon">💬</span>Commands</a></li>
+      <li><a href="#coordinator" class="nav-link" data-section="coordinator"><span class="nav-icon">🎯</span>Coordinator</a></li>
+      <li><a href="#context" class="nav-link" data-section="context"><span class="nav-icon">📦</span>Context</a></li>
+      <li><a href="#services" class="nav-link" data-section="services"><span class="nav-icon">🔌</span>Services</a></li>
+      <li><a href="#state" class="nav-link" data-section="state"><span class="nav-icon">📊</span>State</a></li>
+      <li><a href="#ui" class="nav-link" data-section="ui"><span class="nav-icon">🎨</span>UI Layer</a></li>
+      <li><a href="#hooks" class="nav-link" data-section="hooks"><span class="nav-icon">🪝</span>Hooks</a></li>
+      <li><a href="#subsystems" class="nav-link" data-section="subsystems"><span class="nav-icon">🧩</span>Subsystems</a></li>
+      <li><a href="#config" class="nav-link" data-section="config"><span class="nav-icon">⚡</span>Config</a></li>
+      <li><a href="#build" class="nav-link" data-section="build"><span class="nav-icon">📦</span>Build</a></li>
+      <li><a href="#dataflow" class="nav-link" data-section="dataflow"><span class="nav-icon">🔄</span>Data Flow</a></li>
+    </ul>
+  </nav>
+
+  <!-- Mobile Nav Toggle -->
+  <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+    <span></span><span></span><span></span>
+  </button>
+
+  <!-- Main Content -->
+  <main id="main-content" class="main-content">
+
+    <!-- Hero Section -->
+    <section id="hero" class="section hero-section">
+      <div class="hero-content">
+        <div class="hero-badge animate-fade-in">Open Source Codebase</div>
+        <h1 class="hero-title animate-fade-in delay-1">
+          Claude Code<br/><span class="gradient-text">Codebase Explorer</span>
+        </h1>
+        <p class="hero-subtitle animate-fade-in delay-2">
+          An interactive visual guide to the architecture of <strong>Claude Code</strong> — an AI-powered terminal coding assistant built with TypeScript, React + Ink, and the Anthropic API.
+        </p>
+        <div class="hero-stats animate-fade-in delay-3">
+          <div class="stat-card">
+            <span class="stat-value">800KB+</span>
+            <span class="stat-label">Main Module</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">40+</span>
+            <span class="stat-label">Tools</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">100+</span>
+            <span class="stat-label">Commands</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">290+</span>
+            <span class="stat-label">Utils</span>
+          </div>
+        </div>
+        <div class="hero-tech animate-fade-in delay-4">
+          <span class="tech-tag"><span class="tech-dot ts"></span>TypeScript</span>
+          <span class="tech-tag"><span class="tech-dot bun"></span>Bun</span>
+          <span class="tech-tag"><span class="tech-dot react"></span>React + Ink</span>
+          <span class="tech-tag"><span class="tech-dot ai"></span>Anthropic API</span>
+          <span class="tech-tag"><span class="tech-dot mcp"></span>MCP</span>
+        </div>
+      </div>
+      <div class="scroll-indicator animate-fade-in delay-5">
+        <span>Scroll to explore</span>
+        <div class="scroll-arrow">↓</div>
+      </div>
+    </section>
+
+    <!-- Entrypoints Section -->
+    <section id="entrypoints" class="section">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <h2 class="section-title">Entrypoints</h2>
+        <p class="section-desc">How Claude Code boots up — from zero to full REPL</p>
+      </div>
+      <div class="content-grid">
+        <div class="card glass-card">
+          <div class="card-icon">⚡</div>
+          <h3>cli.tsx <span class="card-badge">Bootstrap</span></h3>
+          <p>The very first thing that runs. Handles <strong>fast paths</strong> that skip the full CLI:</p>
+          <ul class="feature-list">
+            <li><code>--version</code> / <code>-v</code> — prints version, zero imports</li>
+            <li><code>--daemon-worker</code> — spawns lean daemon</li>
+            <li><code>remote-control</code> — bridge mode for remote env</li>
+            <li><code>daemon</code> — long-running supervisor</li>
+            <li><code>ps / logs / attach / kill</code> — session mgmt</li>
+            <li><code>new / list / reply</code> — template jobs</li>
+          </ul>
+          <div class="card-footer">Falls through → <code>main.tsx</code></div>
+        </div>
+        <div class="card glass-card">
+          <div class="card-icon">🔧</div>
+          <h3>init.ts <span class="card-badge">Setup</span></h3>
+          <p>Called once at startup. Bootstraps the environment:</p>
+          <ul class="feature-list">
+            <li>Configuration validation & loading</li>
+            <li>Graceful shutdown handlers</li>
+            <li>Analytics & feature flags (GrowthBook)</li>
+            <li>OAuth, JetBrains, git detection</li>
+            <li>mTLS, proxy, API preconnect</li>
+            <li>Telemetry (deferred until trust)</li>
+          </ul>
+        </div>
+        <div class="card glass-card full-width">
+          <div class="card-icon">🖥️</div>
+          <h3>main.tsx <span class="card-badge hot">800KB+</span></h3>
+          <p>The heaviest module. Sets up <strong>Commander.js</strong> CLI parsing, wires up the REPL, and renders the <strong>Ink-based TUI</strong>. This is why fast paths exist — to avoid loading it for simple operations.</p>
+          <div class="flow-diagram">
+            <div class="flow-node">cli.tsx<br><small>bootstrap</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node flow-decision">Fast path?</div>
+            <div class="flow-arrow">No →</div>
+            <div class="flow-node flow-heavy">main.tsx<br><small>full CLI</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node">REPL<br><small>interactive</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="section">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <h2 class="section-title">Core Architecture</h2>
+        <p class="section-desc">Layered architecture with clear separation of concerns</p>
+      </div>
+      <div class="architecture-diagram">
+        <div class="arch-layer arch-layer-user">
+          <div class="arch-layer-label">User Layer</div>
+          <div class="arch-nodes">
+            <div class="arch-node">User Input</div>
+            <div class="arch-node">SDK / Headless</div>
+          </div>
+        </div>
+        <div class="arch-connector">▼</div>
+        <div class="arch-layer arch-layer-control">
+          <div class="arch-layer-label">Control Layer</div>
+          <div class="arch-nodes">
+            <div class="arch-node highlight">REPL (main.tsx)</div>
+            <div class="arch-node highlight">QueryEngine</div>
+          </div>
+        </div>
+        <div class="arch-connector">▼</div>
+        <div class="arch-layer arch-layer-core">
+          <div class="arch-layer-label">Core Layer</div>
+          <div class="arch-nodes">
+            <div class="arch-node">query.ts<br><small>query loop</small></div>
+            <div class="arch-node">Anthropic API<br><small>claude.ts</small></div>
+            <div class="arch-node">Tool Execution<br><small>orchestration</small></div>
+          </div>
+        </div>
+        <div class="arch-connector">▼</div>
+        <div class="arch-layer arch-layer-impl">
+          <div class="arch-layer-label">Implementation Layer</div>
+          <div class="arch-nodes">
+            <div class="arch-node">40+ Tools</div>
+            <div class="arch-node">100+ Commands</div>
+            <div class="arch-node">Auto-Compact</div>
+            <div class="arch-node">Attachments</div>
+          </div>
+        </div>
+        <div class="arch-connector">▼</div>
+        <div class="arch-layer arch-layer-state">
+          <div class="arch-layer-label">State Layer</div>
+          <div class="arch-nodes">
+            <div class="arch-node">AppState</div>
+            <div class="arch-node">FileStateCache</div>
+            <div class="arch-node">Session Storage</div>
+          </div>
+        </div>
+      </div>
+      <div class="mode-comparison">
+        <div class="mode-card">
+          <h4>🖥️ Interactive (REPL)</h4>
+          <p><code>main.tsx → Ink TUI</code></p>
+          <p>Full terminal UI with keybindings, scrolling, vim mode, themes</p>
+        </div>
+        <div class="mode-card">
+          <h4>🤖 Headless (SDK)</h4>
+          <p><code>QueryEngine → SDKMessage</code></p>
+          <p>Programmatic API, streams events, used by extensions and CI</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Query Engine Section -->
+    <section id="query-engine" class="section">
+      <div class="section-header">
+        <span class="section-number">03</span>
+        <h2 class="section-title">Query Engine & Loop</h2>
+        <p class="section-desc">The heart of the system — an infinite loop of LLM calls and tool execution</p>
+      </div>
+      <div class="content-grid">
+        <div class="card glass-card">
+          <div class="card-icon">🎛️</div>
+          <h3>QueryEngine.ts <span class="card-badge">Orchestrator</span></h3>
+          <p>One <code>QueryEngine</code> per conversation. Owns:</p>
+          <ul class="feature-list">
+            <li>Message history (<code>mutableMessages</code>)</li>
+            <li>File state cache</li>
+            <li>Abort controller</li>
+            <li>Usage tracking</li>
+            <li>Permission denial tracking</li>
+          </ul>
+          <p class="mt">Key method: <code>submitMessage()</code> — an async generator that processes input, builds prompts, calls the query loop, and yields SDK events.</p>
+        </div>
+        <div class="card glass-card">
+          <div class="card-icon">🔄</div>
+          <h3>query.ts <span class="card-badge hot">Core Loop</span></h3>
+          <p>The infinite loop that powers everything:</p>
+          <div class="code-block">
+            <div class="code-header">query loop</div>
+            <pre><code>while (true) {
+  1. Apply tool result budget
+  2. Run snip compaction
+  3. Run microcompact
+  4. Run context collapse
+  5. Run auto-compact
+  6. Check blocking token limits
+  7. Stream from Anthropic API
+  8. Execute tool calls (parallel)
+  9. Handle stop hooks
+  10. Continue if tool_use, else return
+}</code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="state-tracker">
+        <h4>Mutable State Across Iterations</h4>
+        <div class="state-items">
+          <div class="state-item"><code>messages</code><span>conversation history</span></div>
+          <div class="state-item"><code>toolUseContext</code><span>current context</span></div>
+          <div class="state-item"><code>autoCompactTracking</code><span>compaction state</span></div>
+          <div class="state-item"><code>maxOutputTokensRecoveryCount</code><span>truncation recovery</span></div>
+          <div class="state-item"><code>turnCount</code><span>iteration counter</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tool System Section -->
+    <section id="tool-system" class="section">
+      <div class="section-header">
+        <span class="section-number">04</span>
+        <h2 class="section-title">Tool System</h2>
+        <p class="section-desc">40+ tools built with a common interface — from shell execution to web search</p>
+      </div>
+      <div class="tool-interface">
+        <h4>Tool Interface (built via <code>buildTool()</code>)</h4>
+        <div class="interface-grid">
+          <div class="interface-item"><code>call()</code><span>Execute the tool</span></div>
+          <div class="interface-item"><code>prompt()</code><span>Tool description for system prompt</span></div>
+          <div class="interface-item"><code>checkPermissions()</code><span>Permission logic</span></div>
+          <div class="interface-item"><code>validateInput()</code><span>Input validation</span></div>
+          <div class="interface-item"><code>isReadOnly()</code><span>Whether it modifies state</span></div>
+          <div class="interface-item"><code>isConcurrencySafe()</code><span>Can run in parallel</span></div>
+          <div class="interface-item"><code>isDestructive()</code><span>Irreversible flag</span></div>
+          <div class="interface-item"><code>renderToolUseMessage()</code><span>React TUI component</span></div>
+        </div>
+      </div>
+      <div class="tool-tree">
+        <h4>Tool Inventory</h4>
+        <div class="tree-container" id="tool-tree-container">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Commands Section -->
+    <section id="commands" class="section">
+      <div class="section-header">
+        <span class="section-number">05</span>
+        <h2 class="section-title">Command System</h2>
+        <p class="section-desc">100+ slash commands — from /help to /teleport</p>
+      </div>
+      <div class="command-types">
+        <div class="cmd-type-card">
+          <div class="cmd-type-badge local">local</div>
+          <p>Execute locally, return text output</p>
+        </div>
+        <div class="cmd-type-card">
+          <div class="cmd-type-badge jsx">local-jsx</div>
+          <p>Execute locally, render React/Ink UI</p>
+        </div>
+        <div class="cmd-type-card">
+          <div class="cmd-type-badge prompt">prompt</div>
+          <p>Expand to text sent to the model</p>
+        </div>
+      </div>
+      <div class="command-grid" id="command-grid">
+        <!-- Generated by JS -->
+      </div>
+      <div class="command-sources">
+        <h4>Command Sources</h4>
+        <div class="source-flow">
+          <div class="source-node">Built-in</div>
+          <div class="source-node">Skills</div>
+          <div class="source-node">Plugins</div>
+          <div class="source-node">Bundled</div>
+          <div class="source-node">MCP</div>
+          <div class="source-node">Workflows</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Coordinator Section -->
+    <section id="coordinator" class="section">
+      <div class="section-header">
+        <span class="section-number">06</span>
+        <h2 class="section-title">Coordinator Mode</h2>
+        <p class="section-desc">Multi-agent orchestration — coordinator spawns and manages workers</p>
+      </div>
+      <div class="coordinator-diagram">
+        <div class="coord-center">
+          <div class="coord-node coord-main">🎯 Coordinator</div>
+          <p class="coord-desc">Doesn't execute tools directly</p>
+        </div>
+        <div class="coord-workers">
+          <div class="coord-line"></div>
+          <div class="coord-worker">
+            <div class="coord-node coord-w">👷 Worker 1</div>
+            <span>Research</span>
+          </div>
+          <div class="coord-worker">
+            <div class="coord-node coord-w">👷 Worker 2</div>
+            <span>Implementation</span>
+          </div>
+          <div class="coord-worker">
+            <div class="coord-node coord-w">👷 Worker 3</div>
+            <span>Verification</span>
+          </div>
+        </div>
+      </div>
+      <div class="coord-workflow">
+        <div class="workflow-step"><span class="step-num">1</span><strong>Research</strong> — parallel workers investigate</div>
+        <div class="workflow-step"><span class="step-num">2</span><strong>Synthesis</strong> — coordinator reads findings, crafts specs</div>
+        <div class="workflow-step"><span class="step-num">3</span><strong>Implementation</strong> — workers make targeted changes</div>
+        <div class="workflow-step"><span class="step-num">4</span><strong>Verification</strong> — workers test changes</div>
+      </div>
+      <div class="callout">
+        <span class="callout-icon">⚠️</span>
+        <p><strong>Key design:</strong> Workers can't see the coordinator's conversation. Every prompt must be self-contained.</p>
+      </div>
+    </section>
+
+    <!-- Context Section -->
+    <section id="context" class="section">
+      <div class="section-header">
+        <span class="section-number">07</span>
+        <h2 class="section-title">Context Management</h2>
+        <p class="section-desc">Smart context assembly and compaction to stay within token limits</p>
+      </div>
+      <div class="content-grid">
+        <div class="card glass-card">
+          <div class="card-icon">📋</div>
+          <h3>context.ts</h3>
+          <div class="context-table">
+            <div class="ctx-row">
+              <span class="ctx-type">User Context</span>
+              <span class="ctx-source"><code>getUserContext()</code></span>
+              <span class="ctx-content">CLAUDE.md files, current date</span>
+            </div>
+            <div class="ctx-row">
+              <span class="ctx-type">System Context</span>
+              <span class="ctx-source"><code>getSystemContext()</code></span>
+              <span class="ctx-content">Git status, branch, commits</span>
+            </div>
+          </div>
+        </div>
+        <div class="card glass-card">
+          <div class="card-icon">📐</div>
+          <h3>Auto-Compact Pipeline</h3>
+          <div class="compact-pipeline">
+            <div class="pipeline-step"><span class="p-num">1</span>Snip Compaction<br><small>removes old messages</small></div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step"><span class="p-num">2</span>Microcompact<br><small>collapses tool results</small></div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step"><span class="p-num">3</span>Auto-compact<br><small>full summarization</small></div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step"><span class="p-num">4</span>Reactive<br><small>on prompt_too_long</small></div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step"><span class="p-num">5</span>Context Collapse<br><small>staged collapse</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="section">
+      <div class="section-header">
+        <span class="section-number">08</span>
+        <h2 class="section-title">Services Layer</h2>
+        <p class="section-desc">Core services powering API access, plugins, analytics, and more</p>
+      </div>
+      <div class="services-grid" id="services-grid">
+        <!-- Generated by JS -->
+      </div>
+    </section>
+
+    <!-- State Section -->
+    <section id="state" class="section">
+      <div class="section-header">
+        <span class="section-number">09</span>
+        <h2 class="section-title">State Management</h2>
+        <p class="section-desc">Centralized state with Zustand-like store pattern</p>
+      </div>
+      <div class="state-diagram">
+        <div class="state-center">
+          <h4>AppState.tsx</h4>
+          <p>Central state store</p>
+        </div>
+        <div class="state-fields">
+          <div class="state-field"><code>messages</code><span>Conversation history</span></div>
+          <div class="state-field"><code>toolPermissionContext</code><span>Permission rules & mode</span></div>
+          <div class="state-field"><code>mcp</code><span>MCP connections, tools, resources</span></div>
+          <div class="state-field"><code>fastMode</code><span>Fast mode state</span></div>
+          <div class="state-field"><code>effortValue</code><span>Reasoning effort level</span></div>
+          <div class="state-field"><code>fileHistory</code><span>File change tracking</span></div>
+          <div class="state-field"><code>attribution</code><span>Commit attribution</span></div>
+        </div>
+        <div class="state-pattern">
+          <code>getAppState()</code> / <code>setAppState()</code> — single source of truth
+        </div>
+      </div>
+    </section>
+
+    <!-- UI Layer Section -->
+    <section id="ui" class="section">
+      <div class="section-header">
+        <span class="section-number">10</span>
+        <h2 class="section-title">UI Layer</h2>
+        <p class="section-desc">100+ React + Ink components for the terminal UI</p>
+      </div>
+      <div class="component-tree" id="component-tree">
+        <!-- Generated by JS -->
+      </div>
+      <div class="ui-features">
+        <div class="ui-feature"><span>🖱️</span>Virtual scrolling</div>
+        <div class="ui-feature"><span>⌨️</span>Vim mode</div>
+        <div class="ui-feature"><span>🎨</span>Themes</div>
+        <div class="ui-feature"><span>📝</span>Diff rendering</div>
+        <div class="ui-feature"><span>✍️</span>Markdown rendering</div>
+        <div class="ui-feature"><span>🌈</span>Syntax highlighting</div>
+        <div class="ui-feature"><span>🖼️</span>Image display</div>
+        <div class="ui-feature"><span>🎤</span>Voice integration</div>
+      </div>
+    </section>
+
+    <!-- Hooks Section -->
+    <section id="hooks" class="section">
+      <div class="section-header">
+        <span class="section-number">11</span>
+        <h2 class="section-title">Hooks System</h2>
+        <p class="section-desc">80+ React hooks & server-side user hooks for extensibility</p>
+      </div>
+      <div class="content-grid">
+        <div class="card glass-card">
+          <div class="card-icon">🪝</div>
+          <h3>React Hooks (80+)</h3>
+          <ul class="feature-list">
+            <li><code>useCanUseTool</code> — permission checking</li>
+            <li><code>useTypeahead</code> — slash command autocomplete</li>
+            <li><code>useVirtualScroll</code> — efficient scrolling</li>
+            <li><code>useVoiceIntegration</code> — voice input</li>
+            <li><code>useReplBridge</code> — bridge mode comms</li>
+            <li><code>useGlobalKeybindings</code> — keyboard shortcuts</li>
+            <li><code>useArrowKeyHistory</code> — input history</li>
+            <li><code>usePasteHandler</code> — clipboard paste</li>
+          </ul>
+        </div>
+        <div class="card glass-card">
+          <div class="card-icon">🔐</div>
+          <h3>Tool Permissions</h3>
+          <div class="permission-modes">
+            <div class="perm-mode"><code>default</code></div>
+            <div class="perm-mode"><code>plan</code></div>
+            <div class="perm-mode"><code>bypassPermissions</code></div>
+            <div class="perm-mode"><code>auto</code></div>
+          </div>
+          <p class="mt">Permission rules: <code>alwaysAllow</code>, <code>alwaysDeny</code>, <code>alwaysAsk</code></p>
+          <p>Sources: project CLAUDE.md, user settings, enterprise policy</p>
+        </div>
+        <div class="card glass-card full-width">
+          <div class="card-icon">🔗</div>
+          <h3>User Hooks <span class="card-badge hot">160KB</span></h3>
+          <p>Server-side hooks system for custom automation:</p>
+          <div class="hook-types">
+            <div class="hook-type"><code>PreToolUse</code><span>Before tool execution</span></div>
+            <div class="hook-type"><code>PostToolUse</code><span>After tool execution</span></div>
+            <div class="hook-type"><code>Notification</code><span>Custom notifications</span></div>
+            <div class="hook-type"><code>Stop</code><span>Custom stop conditions</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Subsystems Section -->
+    <section id="subsystems" class="section">
+      <div class="section-header">
+        <span class="section-number">12</span>
+        <h2 class="section-title">Key Subsystems</h2>
+        <p class="section-desc">Permissions, sessions, skills, and plugins</p>
+      </div>
+      <div class="subsystem-cards">
+        <div class="card glass-card">
+          <div class="card-icon">🔐</div>
+          <h3>Permissions</h3>
+          <div class="permission-flow">
+            <div class="pf-step">1. <code>validateInput</code></div>
+            <div class="pf-step">2. <code>checkPermissions</code></div>
+            <div class="pf-step">3. PreToolUse hooks</div>
+            <div class="pf-step">4. Auto-mode classifier</div>
+            <div class="pf-step">5. User prompt</div>
+            <div class="pf-step">6. PostToolUse hooks</div>
+          </div>
+        </div>
+        <div class="card glass-card">
+          <div class="card-icon">💾</div>
+          <h3>Session Storage <span class="card-badge hot">180KB</span></h3>
+          <ul class="feature-list">
+            <li>Transcript recording (JSONL)</li>
+            <li>Session resume from disk</li>
+            <li>Cross-machine teleport</li>
+            <li>Background session management</li>
+          </ul>
+        </div>
+        <div class="card glass-card">
+          <div class="card-icon">🎓</div>
+          <h3>Skills</h3>
+          <ul class="feature-list">
+            <li>Reusable prompt templates</li>
+            <li>Loaded from <code>.claude/skills/</code></li>
+            <li>Bundled or from plugins</li>
+            <li>Invoked via SkillTool or commands</li>
+          </ul>
+        </div>
+        <div class="card glass-card">
+          <div class="card-icon">🧩</div>
+          <h3>Plugins</h3>
+          <ul class="feature-list">
+            <li>Custom tools, commands, skills</li>
+            <li>MCP server integration</li>
+            <li>Built-in plugins (LSP etc.)</li>
+            <li>Plugin marketplace</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Config Section -->
+    <section id="config" class="section">
+      <div class="section-header">
+        <span class="section-number">13</span>
+        <h2 class="section-title">Configuration</h2>
+        <p class="section-desc">Multi-source config resolution — from enterprise policy to env vars</p>
+      </div>
+      <div class="config-priority">
+        <div class="config-level" style="--level: 1"><span class="config-rank">1</span>Enterprise policy<small>remote managed settings</small></div>
+        <div class="config-level" style="--level: 2"><span class="config-rank">2</span>User global<small>~/.claude/settings.json</small></div>
+        <div class="config-level" style="--level: 3"><span class="config-rank">3</span>Project<small>.claude/settings.json</small></div>
+        <div class="config-level" style="--level: 4"><span class="config-rank">4</span>CLAUDE.md files<small>project/user/enterprise</small></div>
+        <div class="config-level" style="--level: 5"><span class="config-rank">5</span>Environment variables<small>CLAUDE_CODE_*</small></div>
+      </div>
+      <div class="env-vars">
+        <h4>Key Environment Variables</h4>
+        <div class="env-grid">
+          <div class="env-item"><code>CLAUDE_CODE_REMOTE</code><span>Remote/container mode</span></div>
+          <div class="env-item"><code>CLAUDE_CODE_COORDINATOR_MODE</code><span>Enable coordinator mode</span></div>
+          <div class="env-item"><code>CLAUDE_CODE_SIMPLE</code><span>Minimal tool set</span></div>
+          <div class="env-item"><code>CLAUDE_CODE_DISABLE_THINKING</code><span>Disable thinking blocks</span></div>
+          <div class="env-item"><code>DISABLE_AUTO_COMPACT</code><span>Disable auto compaction</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Build Section -->
+    <section id="build" class="section">
+      <div class="section-header">
+        <span class="section-number">14</span>
+        <h2 class="section-title">Build System</h2>
+        <p class="section-desc">Bun-powered bundling with compile-time feature flags</p>
+      </div>
+      <div class="build-info">
+        <div class="card glass-card">
+          <div class="card-icon">📦</div>
+          <h3>Bun Runtime & Bundler</h3>
+          <ul class="feature-list">
+            <li><code>feature()</code> from <code>bun:bundle</code> — build-time feature flags</li>
+            <li><code>MACRO.VERSION</code> — build-time version injection</li>
+            <li>Conditional <code>require()</code> — lazy loading behind feature gates</li>
+            <li>Source maps embedded as base64</li>
+          </ul>
+        </div>
+      </div>
+      <div class="feature-flags">
+        <h4>Feature Flags</h4>
+        <div class="flags-cloud" id="flags-cloud">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Data Flow Section -->
+    <section id="dataflow" class="section">
+      <div class="section-header">
+        <span class="section-number">15</span>
+        <h2 class="section-title">Data Flow</h2>
+        <p class="section-desc">End-to-end message lifecycle — from user input to rendered response</p>
+      </div>
+      <div class="sequence-diagram">
+        <div class="seq-participants">
+          <div class="seq-p">User</div>
+          <div class="seq-p">REPL/SDK</div>
+          <div class="seq-p">QueryEngine</div>
+          <div class="seq-p">query()</div>
+          <div class="seq-p">API</div>
+          <div class="seq-p">Tools</div>
+        </div>
+        <div class="seq-messages">
+          <div class="seq-msg" data-from="0" data-to="1"><span>Type message</span></div>
+          <div class="seq-msg" data-from="1" data-to="2"><span>submitMessage()</span></div>
+          <div class="seq-msg self" data-from="2" data-to="2"><span>processUserInput()</span></div>
+          <div class="seq-msg self" data-from="2" data-to="2"><span>fetchSystemPromptParts()</span></div>
+          <div class="seq-msg" data-from="2" data-to="3"><span>query(messages, prompt, tools)</span></div>
+          <div class="seq-msg loop-start" data-from="3" data-to="3"><span>── Query Loop ──</span></div>
+          <div class="seq-msg" data-from="3" data-to="4"><span>Stream request</span></div>
+          <div class="seq-msg return" data-from="4" data-to="3"><span>Response + tool_use</span></div>
+          <div class="seq-msg" data-from="3" data-to="5"><span>Execute tools</span></div>
+          <div class="seq-msg return" data-from="5" data-to="3"><span>Tool results</span></div>
+          <div class="seq-msg loop-end" data-from="3" data-to="3"><span>── End Loop ──</span></div>
+          <div class="seq-msg return" data-from="3" data-to="2"><span>Terminal reason</span></div>
+          <div class="seq-msg return" data-from="2" data-to="1"><span>Yield SDKMessages</span></div>
+          <div class="seq-msg return" data-from="1" data-to="0"><span>Render in TUI</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- File Size Hotspots -->
+    <section id="hotspots" class="section">
+      <div class="section-header">
+        <span class="section-number">16</span>
+        <h2 class="section-title">File Size Hotspots</h2>
+        <p class="section-desc">The largest files in the codebase — candidates for decomposition</p>
+      </div>
+      <div class="hotspots-chart" id="hotspots-chart">
+        <!-- Generated by JS -->
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Built from the <a href="https://github.com/anthropics/claude-code" target="_blank">Claude Code</a> codebase walkthrough</p>
+      <p class="footer-sub">Interactive visualization &bull; Not affiliated with Anthropic</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
