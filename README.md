@@ -1,6 +1,6 @@
 # Claude Code — Codebase Explorer
 
-An interactive, single-page website that visually explains the architecture of **Claude Code** (entrypoints, core systems, tools, commands, and more).
+An interactive, single-page website that visually explains the architecture of **Claude Code Leaked Repo** (entrypoints, core systems, tools, commands, and more).
 
 ## Demo
 
